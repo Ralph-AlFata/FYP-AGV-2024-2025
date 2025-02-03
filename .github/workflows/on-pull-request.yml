@@ -21,9 +21,12 @@ jobs:
           # Source the ROS 2 setup script
           source /opt/ros/humble/setup.bash
 
-          # Update rosdep and install dependencies from package manifests, if any
+          if [ "$(find ~/ros2_ws/src -name 'package.xml' | wc -l)" -gt 0 ]; then
           rosdep update
           rosdep install --from-paths ~/ros2_ws/src --ignore-src -r -y
+          else
+            echo "No packages found. Skipping dependency installation."
+          fi
 
       - name: Build the ROS 2 workspace
         run: |
