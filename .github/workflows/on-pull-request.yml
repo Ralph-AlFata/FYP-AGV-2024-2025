@@ -1,23 +1,35 @@
-name: C/C++ CI
+name: FYP AGV project
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-22.04
+    container:
+      image: osrf/ros:humble-desktop
     steps:
-    - uses: actions/checkout@v4
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up ROS 2 workspace and install dependencies
+        run: |
+          # Create a ROS 2 workspace directory and its src folder
+          mkdir -p ~/ros2_ws/src
+
+          # Source the ROS 2 setup script
+          source /opt/ros/humble/setup.bash
+
+          # Update rosdep and install dependencies from package manifests, if any
+          rosdep update
+          rosdep install --from-paths ~/ros2_ws/src --ignore-src -r -y
+
+      - name: Build the ROS 2 workspace
+        run: |
+          # Source the ROS 2 setup again in this shell session
+          source /opt/ros/humble/setup.bash
+          cd ~/ros2_ws
+
+          # Build using colcon with symlink install enabled (helps during development)
+          colcon build --symlink-install
