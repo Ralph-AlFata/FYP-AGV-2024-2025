@@ -16,4 +16,4 @@
         echo "export ROS_LOCALHOST_ONLY=1" >> ~/.bashrc
         sudo apt install python3-colcon-common-extensions
 
-  adlkfahsdlkfjahsdf
+  
